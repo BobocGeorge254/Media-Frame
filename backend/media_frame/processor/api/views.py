@@ -11,9 +11,11 @@ from processor.speechidentifier import speechidentifier_audio
 from processor.speedup import speedup_audio
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from rest_framework import permissions
 
 @method_decorator(csrf_exempt, name='dispatch')
 class TranscriptionAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser]
 
     def post(self, request, *args, **kwargs):
@@ -31,6 +33,7 @@ class TranscriptionAPIView(APIView):
         
 @method_decorator(csrf_exempt, name='dispatch')
 class PitchShiftingAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser]
     
     def post(self, request, *args, **kwargs):
@@ -64,6 +67,7 @@ class PitchShiftingAPIView(APIView):
         
 @method_decorator(csrf_exempt, name='dispatch')
 class NoiseCancelAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser]
 
     def post(self, request, *args, **kwargs):
@@ -88,6 +92,7 @@ class NoiseCancelAPIView(APIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class BassBoostAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser]
 
     def post(self, request, *args, **kwargs):
@@ -112,6 +117,7 @@ class BassBoostAPIView(APIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class SpeechIdentifierAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser]
 
     def post(self, request, *args, **kwargs):
@@ -132,6 +138,7 @@ class SpeechIdentifierAPIView(APIView):
         
 @method_decorator(csrf_exempt, name='dispatch')
 class SpeedUpAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser]
 
     def post(self, request, *args, **kwargs):

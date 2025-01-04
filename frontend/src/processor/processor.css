@@ -1,0 +1,154 @@
+/* Basic container for the processor form */
+.Processor {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Title or heading of the form */
+.Processor h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Form group styling */
+.Processor .form-group {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+/* Labels for form fields */
+.Processor label {
+    display: block;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+/* Select and input fields */
+.Processor select,
+.Processor input[type="number"],
+.Processor input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
+
+/* Ensure consistency for select and file input styles */
+.Processor select,
+.Processor input[type="file"] {
+    -webkit-appearance: none; /* Remove default styling on some browsers */
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Input focus styles */
+.Processor select:focus,
+.Processor input[type="number"]:focus,
+.Processor input[type="file"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Submit button styling */
+.Processor .submit-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+}
+
+.Processor .submit-btn:hover {
+    background-color: #0056b3;
+}
+
+.Processor .submit-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Loading spinner container */
+.Processor .loading-spinner {
+    display: flex;           
+    flex-direction: column;  
+    align-items: center;    
+    margin-top: 20px;
+    text-align: center;     
+}
+
+.Processor .loading-spinner p {
+    text-align: center;
+    margin-top: 10px;
+    color: #4fa94d;
+}
+
+/* Error message styling */
+.Processor .error-text {
+    color: #ff4d4f;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Output section styling */
+.Processor .output-box {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    width: 80%;
+    text-align: center; /* Center the output box content */
+}
+
+.Processor .output-box h2 {
+    margin-bottom: 10px;
+    color: #333;
+    text-align: center; /* Center the header */
+}
+
+.Processor .output-box pre {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    text-align: center; /* Center the transcript text */
+}
+
+/* Download link for processed audio */
+.Processor .download-link {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.Processor .download-link:hover {
+    background-color: #0056b3;
+}

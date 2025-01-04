@@ -1,6 +1,5 @@
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import os
-import tempfile
 import whisper
 
 def speechidentifier_audio(audio_file: InMemoryUploadedFile) -> dict:
