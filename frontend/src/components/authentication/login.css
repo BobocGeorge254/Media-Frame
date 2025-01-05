@@ -70,4 +70,28 @@
     margin-top: 10px;
     text-align: center;
   }
+
+  /* Button Styling */
+.navigate-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Button Hover Effect */
+.navigate-button:hover {
+  background-color: #0056b3;
+}
+
+/* Button Focus Effect */
+.navigate-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
+}
+
   

@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import Login from './authentication/login';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, BrowserRouter } from 'react-router-dom';
+import Home from './components/home/home';
+import Login from './components/authentication/login';
 import Processor from './processor/processor';
-import { access } from 'fs';
+import Register from './components/authentication/register';
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [token, setToken] = useState<string>(''); // Access token
   const [refreshToken, setRefreshToken] = useState<string>(''); // Refresh token
+  const navigate = useNavigate();
 
   // Check if the user is logged in on component mount
   useEffect(() => {
@@ -25,6 +28,7 @@ const App: React.FC = () => {
     setRefreshToken(refreshToken);
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
+    navigate('/processor');  // Redirect to processor page after login
   };
 
   const handleLogout = async () => {
@@ -46,6 +50,7 @@ const App: React.FC = () => {
         setIsLoggedIn(false);
         setToken('');
         setRefreshToken('');
+        navigate('/');  // Redirect to Home page after logout
       } else {
         console.error('Logout failed');
       }
@@ -56,14 +61,24 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      {isLoggedIn ? (
-        <div>
-          <button onClick={handleLogout}>Logout</button>
-          <Processor token={token} />
-        </div>
-      ) : (
-        <Login onLogin={handleLogin} />
-      )}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        <Route path="/register" element={<Register onRegister={() => navigate('/login')} />} />
+        <Route
+          path="/processor"
+          element={
+            isLoggedIn ? (
+              <div>
+                <button onClick={handleLogout}>Logout</button>
+                <Processor token={token} />
+              </div>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+      </Routes>
     </div>
   );
 };
