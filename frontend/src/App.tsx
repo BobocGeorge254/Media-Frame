@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, BrowserRouter } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Home from './components/home/home';
 import Login from './components/authentication/login';
 import Processor from './processor/processor';
 import Register from './components/authentication/register';
+import './App.css'
+import ForgotPassword from './components/authentication/forgot-password';
+import ResetPassword from './components/authentication/reset-password';
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -28,7 +31,7 @@ const App: React.FC = () => {
     setRefreshToken(refreshToken);
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
-    navigate('/processor');  // Redirect to processor page after login
+    navigate('/processor'); // Redirect to processor page after login
   };
 
   const handleLogout = async () => {
@@ -50,7 +53,7 @@ const App: React.FC = () => {
         setIsLoggedIn(false);
         setToken('');
         setRefreshToken('');
-        navigate('/');  // Redirect to Home page after logout
+        navigate('/'); // Redirect to Home page after logout
       } else {
         console.error('Logout failed');
       }
@@ -62,15 +65,35 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/register" element={<Register onRegister={() => navigate('/login')} />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
+        {/* Protected Route with Navbar */}
         <Route
           path="/processor"
           element={
             isLoggedIn ? (
               <div>
-                <button onClick={handleLogout}>Logout</button>
+                {/* Navbar */}
+                <header className="navbar">
+                  <div className="navbar-left">
+                    <div className="logo-icon">MF</div>
+                    <h1 className="navbar-title">MediaFrame</h1>
+                  </div>
+                  <div className="navbar-right">
+                    <button onClick={() => alert('Profile')} className="navbar-button profile-button">
+                      Profile
+                    </button>
+                    <button onClick={handleLogout} className="navbar-button logout-button">
+                      Logout
+                    </button>
+                  </div>
+                </header>
+
+                {/* Processor Content */}
                 <Processor token={token} />
               </div>
             ) : (

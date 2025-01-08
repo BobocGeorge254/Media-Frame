@@ -2,7 +2,6 @@ import React, { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './login.css';
 
-
 interface LoginProps {
   onLogin: (accessToken: string, refreshToken: string) => void;
 }
@@ -32,7 +31,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         localStorage.setItem('accessToken', access);
         localStorage.setItem('refreshToken', refresh);
 
-        // Pass both tokens to the parent component
         onLogin(access, refresh);
       } else {
         const result = await response.json();
@@ -44,8 +42,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <div>
-      <button className="navigate-button" onClick={() => navigate('/')}>Go to Home</button>
+    <div className="login-container">
       <div className="login-form">
         <h1>Login</h1>
         <form onSubmit={handleLogin}>
@@ -56,6 +53,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your username"
             />
           </div>
           <div className="form-group">
@@ -65,11 +63,19 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
             />
           </div>
           <button type="submit">Login</button>
         </form>
         {error && <p className="error-text">{error}</p>}
+
+        {/* "Forgot Password?" link */}
+        <p className="forgot-password">
+          <a onClick={() => navigate('/forgot-password')} className="forgot-password-link">
+            Forgot Password?
+          </a>
+        </p>
       </div>
     </div>
   );

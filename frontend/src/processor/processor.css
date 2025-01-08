@@ -1,107 +1,100 @@
-/* Basic container for the processor form */
+/* Main container for the processor */
 .Processor {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f4f4f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background: radial-gradient(circle, #000225, #00001a);
+    /* Matching dark background */
     font-family: 'Arial', sans-serif;
+    color: #f4f4f9;
+}
+
+/* Processor form container */
+.Processor form {
+    background: #04152b;
+    /* Matching dark blue for the form */
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-/* Title or heading of the form */
+/* Form title */
 .Processor h1 {
+    color: #3fa6d6;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 2rem;
     text-align: center;
-    margin-bottom: 20px;
-    color: #333;
+    margin-bottom: 30px;
+    text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
 }
 
-/* Form group styling */
+/* Form group */
 .Processor .form-group {
-    margin-bottom: 15px;
     width: 100%;
+    margin-bottom: 20px;
+    /* Increased spacing between fields */
+    text-align: left;
 }
 
-/* Labels for form fields */
+/* Labels */
 .Processor label {
-    display: block;
     font-weight: bold;
-    color: #555;
+    color: #cce7ff;
     margin-bottom: 5px;
+    display: block;
 }
 
-/* Select and input fields */
+/* Dropdown, inputs, and file */
 .Processor select,
 .Processor input[type="number"],
 .Processor input[type="file"] {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     font-size: 16px;
-    border: 1px solid #ddd;
+    border: 1px solid #092244;
     border-radius: 5px;
-    background-color: #fff;
-    color: #333;
-    box-sizing: border-box; /* Ensure padding doesn't affect width */
+    background-color: #061d3a;
+    color: #fff;
+    margin-top: 5px;
 }
 
-/* Ensure consistency for select and file input styles */
-.Processor select,
-.Processor input[type="file"] {
-    -webkit-appearance: none; /* Remove default styling on some browsers */
-    -moz-appearance: none;
-    appearance: none;
-}
-
-/* Input focus styles */
 .Processor select:focus,
 .Processor input[type="number"]:focus,
 .Processor input[type="file"]:focus {
-    border-color: #007bff;
+    border-color: #3fa6d6;
     outline: none;
 }
 
-/* Submit button styling */
+/* Submit button */
 .Processor .submit-btn {
     width: 100%;
-    padding: 10px;
-    background-color: #007bff;
+    padding: 12px;
+    background-color: #1a5d75;
+    /* Matching dark teal */
     color: #fff;
     font-size: 16px;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    text-align: center;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-top: 20px;
+    /* Added spacing below input */
 }
 
 .Processor .submit-btn:hover {
-    background-color: #0056b3;
+    background-color: #144c5c;
+    transform: scale(1.05);
 }
 
-.Processor .submit-btn:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-/* Loading spinner container */
-.Processor .loading-spinner {
-    display: flex;           
-    flex-direction: column;  
-    align-items: center;    
-    margin-top: 20px;
-    text-align: center;     
-}
-
-.Processor .loading-spinner p {
-    text-align: center;
-    margin-top: 10px;
-    color: #4fa94d;
-}
-
-/* Error message styling */
+/* Error message */
 .Processor .error-text {
     color: #ff4d4f;
     font-size: 14px;
@@ -109,46 +102,46 @@
     text-align: center;
 }
 
-/* Output section styling */
+/* Output styling */
 .Processor .output-box {
-    margin-top: 20px;
+    margin-top: 30px;
     padding: 20px;
-    background-color: #fff;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    width: 80%;
-    text-align: center; /* Center the output box content */
-}
-
-.Processor .output-box h2 {
-    margin-bottom: 10px;
-    color: #333;
-    text-align: center; /* Center the header */
-}
-
-.Processor .output-box pre {
-    background-color: #f9f9f9;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    color: #333;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    text-align: center; /* Center the transcript text */
-}
-
-/* Download link for processed audio */
-.Processor .download-link {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
+    background-color: #061d3a;
+    border-radius: 15px;
+    border: 1px solid #092244;
+    color: #cce7ff;
+    width: 100%;
+    max-width: 500px;
     text-align: center;
 }
 
+.Processor .output-box h2 {
+    margin-bottom: 15px;
+    color: #3fa6d6;
+}
+
+.Processor .output-box pre {
+    background-color: #092244;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #cce7ff;
+}
+
+/* Download link */
+.Processor .download-link {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #1a5d75;
+    color: white;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 14px;
+    display: inline-block;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
 .Processor .download-link:hover {
-    background-color: #0056b3;
+    background-color: #144c5c;
+    transform: scale(1.05);
 }

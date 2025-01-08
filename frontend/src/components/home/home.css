@@ -1,106 +1,193 @@
+/* Reset margins and paddings */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 /* Main container */
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  /* Prevent unnecessary scrollbars */
+  font-family: 'Arial', sans-serif;
+}
+
 .homepage-container {
-    font-family: 'Arial', sans-serif;
-    text-align: center;
-    padding: 20px;
-    background-color: #f4f4f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  /* Full-screen height */
+  width: 100vw;
+  /* Full-screen width */
+  background: radial-gradient(circle, #000225, #00001a);
+  /* Darker gradient background */
+  color: #f4f4f9;
+}
+
+/* Centered card */
+.card-container {
+  background: #04152b;
+  /* Slightly lighter than the background */
+  padding: 50px;
+  border-radius: 25px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  width: 60%;
+  /* Increased size */
+  max-width: 600px;
+  text-align: center;
+}
+
+/* Header section */
+.card-header .app-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.app-title h1 {
+  font-size: 2.8rem;
+  color: #3fa6d6;
+  /* Darker blue tone for the title */
+  margin-left: 10px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  letter-spacing: 1px;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+.app-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #3fa6d6;
+  /* Match the title color */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: #04152b;
+  font-size: 1.5rem;
+}
+
+/* Auth buttons */
+.auth-buttons {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.action-button {
+  padding: 15px 30px;
+  font-size: 1rem;
+  margin: 5px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #fff;
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.register-button {
+  background-color: #1a5d75;
+  /* Darker teal for Register button */
+}
+
+.register-button:hover {
+  background-color: #144c5c;
+  /* Slightly darker on hover */
+  transform: scale(1.05);
+}
+
+.login-button {
+  background-color: #2c3e50;
+  /* Darker blue-gray for Login button */
+}
+
+.login-button:hover {
+  background-color: #24333f;
+  /* Slightly darker on hover */
+  transform: scale(1.05);
+}
+
+/* Tier card */
+.tier-card {
+  background: #092244;
+  /* Slightly darker than the center box */
+  padding: 40px;
+  border-radius: 15px;
+  margin-top: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.tier-card h2 {
+  font-size: 2.2rem;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.tier-card .price {
+  font-size: 1.8rem;
+  color: #4acaff;
+  margin-bottom: 20px;
+}
+
+.tier-card .features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+}
+
+.tier-card .features li {
+  font-size: 1rem;
+  color: #cce7ff;
+  margin: 8px 0;
+}
+
+.select-plan-button {
+  background-color: #1a5d75;
+  /* Matching the Register button */
+  color: #fff;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.select-plan-button:hover {
+  background-color: #144c5c;
+  /* Slightly darker on hover */
+  transform: scale(1.05);
+}
+
+/* Login message */
+.login-message {
+  margin-top: 30px;
+  font-size: 1rem;
+  color: #cce7ff;
+  font-style: italic;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .card-container {
+    width: 90%;
+    padding: 30px;
   }
-  
-  /* Header section */
-  .homepage-header {
-    margin-bottom: 40px;
+
+  .app-title h1 {
+    font-size: 2rem;
   }
-  
-  .homepage-header h1 {
-    font-size: 2.5rem;
-    color: #333;
+
+  .app-icon {
+    width: 40px;
+    height: 40px;
   }
-  
-  .homepage-header p {
-    font-size: 1.2rem;
-    color: #555;
-    margin: 10px 0;
-  }
-  
-  .homepage-buttons {
-    margin-top: 20px;
-  }
-  
-  .action-button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    margin: 5px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: transform 0.3s, background-color 0.3s;
-  }
-  
-  .register-button {
-    background-color: #007bff;
-    color: #fff;
-  }
-  
-  .register-button:hover {
-    background-color: #0056b3;
-    transform: scale(1.1);
-  }
-  
-  .login-button {
-    background-color: #28a745;
-    color: #fff;
-  }
-  
-  .login-button:hover {
-    background-color: #218838;
-    transform: scale(1.1);
-  }
-  
-  /* Tier cards section */
-  .tier-cards {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-  }
-  
-  .tier-card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 20px;
-    width: 300px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  
-  .tier-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  }
-  
-  .tier-card h2 {
-    font-size: 1.8rem;
-    color: #333;
-    margin-bottom: 10px;
-  }
-  
-  .tier-card .price {
-    font-size: 1.5rem;
-    color: #007bff;
-    margin-bottom: 15px;
-  }
-  
-  .tier-card .features {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .tier-card .features li {
-    font-size: 1rem;
-    color: #555;
-    margin: 5px 0;
-  }
-  
+}
