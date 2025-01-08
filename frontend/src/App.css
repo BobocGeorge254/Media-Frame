@@ -1,0 +1,67 @@
+/* Navbar container */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #04152b;
+    /* Dark blue theme */
+    color: #f4f4f9;
+    border-bottom: 1px solid #092244;
+    /* Subtle border at the bottom */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Left side: Logo and title */
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #3fa6d6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #04152b;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-right: 10px;
+}
+
+.navbar-title {
+    font-size: 1.5rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #f4f4f9;
+    letter-spacing: 1px;
+}
+
+/* Right side: Profile and Logout buttons */
+.navbar-right {
+    display: flex;
+    gap: 15px;
+}
+
+.navbar-button {
+    padding: 10px 20px;
+    background-color: #1a5d75;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.navbar-button:hover {
+    background-color: #144c5c;
+    transform: scale(1.05);
+}
+
+.navbar-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(26, 93, 117, 0.5);
+}
