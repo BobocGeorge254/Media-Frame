@@ -70,7 +70,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         </form>
         {error && <p className="error-text">{error}</p>}
 
-        {/* "Forgot Password?" link */}
+        <button type="submit" onClick={() => navigate('/register')}>Register</button>
+
         <p className="forgot-password">
           <a onClick={() => navigate('/forgot-password')} className="forgot-password-link">
             Forgot Password?

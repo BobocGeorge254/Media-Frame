@@ -1,5 +1,6 @@
 import React, { useState, FormEvent } from 'react';
 import './register.css';
+import { useNavigate } from 'react-router-dom';
 
 interface RegisterProps {
   onRegister: () => void;
@@ -12,11 +13,11 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
   const [lastName, setLastName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const navigate = useNavigate();
 
   const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
-
-    // Validation
+    
     if (!username || !email || !firstName || !lastName || !password) {
       setError('All fields are required');
       return;
@@ -81,25 +82,27 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
               placeholder="Enter your email"
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="firstName">First Name</label>
-            <input
-              type="text"
-              id="firstName"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              placeholder="Enter your first name"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="lastName">Last Name</label>
-            <input
-              type="text"
-              id="lastName"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              placeholder="Enter your last name"
-            />
+          <div className="name-group">
+            <div className="form-group">
+              <label htmlFor="firstName">First Name</label>
+              <input
+                type="text"
+                id="firstName"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="First name"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="lastName">Last Name</label>
+              <input
+                type="text"
+                id="lastName"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Last name"
+              />
+            </div>
           </div>
           <div className="form-group">
             <label htmlFor="password">Password</label>
@@ -111,9 +114,18 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
               placeholder="Enter your password"
             />
           </div>
-          <button type="submit">Register</button>
+          <div className="button-group">
+            <button type="submit">Register</button>
+
+            {error && <p className="error-text">{error}</p>}
+
+            <button type="button" onClick={() => navigate('/login')} className="login-button">
+              Already have an account? Login
+            </button>
+          </div>
         </form>
-        {error && <p className="error-text">{error}</p>}
+        <p className="bottom-text">*you will be granted free tier access. Make sure to upgrade in the profile section.</p>
+        
       </div>
     </div>
   );

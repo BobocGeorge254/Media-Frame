@@ -19,12 +19,8 @@ const Home: React.FC = () => {
       <div className="card-container">
         <header className="card-header">
           <div className="app-title">
-            <img
-              src="https://via.placeholder.com/40"
-              alt="App Icon"
-              className="app-icon"
-            />
-            <h1>MediaFrame</h1>
+            <div className="logo-icon">MF</div>
+            <h1>Media Frame</h1>
           </div>
           <p>Transform your audio and video like a pro, without the cost.</p>
         </header>

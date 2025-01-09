@@ -93,3 +93,62 @@ class ResetPasswordView(APIView):
             return Response({"message": "Password has been reset successfully."}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": "Something went wrong."}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class UserDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, user_id):
+        print("user_id:", user_id, "Type:", type(user_id))
+        print("request.user.id:", request.user.id, "Type:", type(request.user.id))
+
+        if request.user.id != user_id:
+            return Response(
+                {"error": "You are not authorized to access this user's details."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        user = CustomUser.objects.get(id=user_id)
+        user_data = {
+            "username": user.username,
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "phone_number": user.phone_number,
+            "tier": user.tier,
+            "date_joined": user.date_joined,
+        }
+        return Response(user_data, status=status.HTTP_200_OK)
+    
+
+class UserUpdateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def put(self, request, user_id):
+        # Check if the user trying to update their details is the correct user
+        if request.user.id != user_id:
+            return Response(
+                {"error": "You are not authorized to update this user's details."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        # Fetch the user object
+        try:
+            user = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Validate the data passed in the request body
+        data = request.data
+
+        # You can allow the user to update specific fields (for example: tier, first_name, last_name, etc.)
+        for key, value in data.items():
+            if hasattr(user, key):
+                setattr(user, key, value)
+
+        user.save()
+
+        return Response(
+            {"message": "User details updated successfully."},
+            status=status.HTTP_200_OK,
+        )

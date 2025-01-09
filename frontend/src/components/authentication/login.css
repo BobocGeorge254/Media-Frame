@@ -1,11 +1,9 @@
-/* Reset margins and paddings */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Login container */
 .login-container {
   display: flex;
   flex-direction: column;
@@ -14,16 +12,13 @@
   height: 100vh;
   width: 100vw;
   background: radial-gradient(circle, #000225, #00001a);
-  /* Dark background matching Home Page */
   color: #f4f4f9;
   font-family: 'Arial', sans-serif;
 }
 
-/* Login form */
 .login-form {
   background: #04152b;
-  /* Dark blue matching the Register Page */
-  padding: 40px;
+  padding: 25px;
   border-radius: 25px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
   width: 90%;
@@ -31,20 +26,17 @@
   text-align: center;
 }
 
-/* Form header */
 .login-form h1 {
-  font-size: 2rem;
+  font-size: 1.75rem;
   color: #3fa6d6;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   letter-spacing: 1px;
   text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
 }
 
-/* Label styles */
 .login-form .form-group {
-  margin-bottom: 25px;
-  /* Increased spacing */
+  margin-bottom: 15px;
   text-align: left;
 }
 
@@ -52,14 +44,14 @@
   display: block;
   font-weight: bold;
   color: #cce7ff;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
+  font-size: 0.9rem;
 }
 
-/* Input fields */
 .login-form input {
   width: 100%;
-  padding: 12px;
-  font-size: 16px;
+  padding: 8px 12px;
+  font-size: 14px;
   border: 1px solid #092244;
   border-radius: 5px;
   background-color: #061d3a;
@@ -70,42 +62,35 @@
   color: #8ba9c9;
 }
 
-/* Input focus styles */
 .login-form input:focus {
   border-color: #3fa6d6;
   outline: none;
 }
 
-/* Submit button */
 .login-form button {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   background-color: #1a5d75;
-  /* Dark teal */
   color: #fff;
-  font-size: 16px;
+  font-size: 14px;
   border: none;
   border-radius: 25px;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.3s;
-  margin-top: 15px;
-  /* Added space between buttons */
+  margin-top: 10px;
 }
 
 .login-form button:hover {
   background-color: #144c5c;
-  /* Slightly darker teal on hover */
   transform: scale(1.05);
 }
 
 .navigate-button {
-  margin-top: 15px;
-  /* Added spacing between buttons */
-  padding: 12px;
+  margin-top: 10px;
+  padding: 10px;
   background-color: #2c3e50;
-  /* Darker blue-gray */
   color: #fff;
-  font-size: 16px;
+  font-size: 14px;
   border: none;
   border-radius: 25px;
   cursor: pointer;
@@ -114,29 +99,25 @@
 
 .navigate-button:hover {
   background-color: #24333f;
-  /* Slightly darker blue-gray on hover */
   transform: scale(1.05);
 }
 
-/* Error message */
 .login-form .error-text {
   color: #ff4d4f;
-  font-size: 14px;
-  margin-top: 15px;
-  /* Increased spacing for better readability */
+  font-size: 12px;
+  margin-top: 10px;
   text-align: center;
 }
 
 .forgot-password {
   text-align: center;
-  margin-top: 15px;
+  margin-top: 10px;
 }
 
 .forgot-password-link {
   color: #1a5d75;
-  /* Dark teal color matching app theme */
   text-decoration: none;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
   transition: color 0.3s ease, transform 0.3s ease;
   cursor: pointer;
@@ -144,12 +125,9 @@
 
 .forgot-password-link:hover {
   color: #144c5c;
-  /* Darker teal on hover */
   transform: scale(1.05);
 }
 
-
-/* Responsive design */
 @media (max-width: 768px) {
   .login-form {
     width: 90%;

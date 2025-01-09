@@ -12,7 +12,6 @@ class StripeCheckoutView(APIView):
     permission_classes = [permissions.AllowAny]   
     def post(self, request, price_id):
         try:
-            print(price_id)
             checkout_session = stripe.checkout.Session.create(
                 line_items=[
                     {

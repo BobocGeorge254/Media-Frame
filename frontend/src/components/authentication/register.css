@@ -1,117 +1,151 @@
-/* Reset margins and paddings */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Registration container */
 .registration-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   background: radial-gradient(circle, #000225, #00001a);
-  /* Dark background matching the Home Page */
   color: #f4f4f9;
   font-family: 'Arial', sans-serif;
+  padding: 20px;
+  overflow-y: auto;
 }
 
-/* Registration form */
 .registration-form {
-  background: #04152b;
-  /* Slightly lighter dark blue */
-  padding: 40px;
-  border-radius: 25px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
   width: 90%;
   max-width: 500px;
+  background: #04152b;
+  padding: 25px;
+  border-radius: 25px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
   text-align: center;
+  margin: auto;
 }
 
-/* Form header */
 .registration-form h1 {
-  font-size: 2rem;
+  font-size: 1.75rem;
   color: #3fa6d6;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   letter-spacing: 1px;
   text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
 }
 
-/* Label styles */
-.registration-form .form-group {
-  margin-bottom: 25px;
-  /* Increased space between fields */
+.form-group {
+  margin-bottom: 15px;
   text-align: left;
 }
 
-.registration-form label {
+.name-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.name-group .form-group {
+  margin-bottom: 0;
+}
+
+.form-group label {
   display: block;
   font-weight: bold;
   color: #cce7ff;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
+  font-size: 0.9rem;
 }
 
-/* Input fields */
-.registration-form input {
+.form-group input {
   width: 100%;
-  padding: 12px;
-  /* Slightly larger padding for better usability */
-  font-size: 16px;
+  padding: 8px 12px;
+  font-size: 14px;
   border: 1px solid #092244;
   border-radius: 5px;
   background-color: #061d3a;
   color: #fff;
 }
 
-.registration-form input::placeholder {
+.form-group input::placeholder {
   color: #8ba9c9;
 }
 
-/* Input focus styles */
-.registration-form input:focus {
+.form-group input:focus {
   border-color: #3fa6d6;
   outline: none;
 }
 
-/* Submit button */
-.registration-form button {
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+button {
   width: 100%;
-  padding: 12px;
-  background-color: #1a5d75;
-  /* Dark teal */
-  color: #fff;
-  font-size: 16px;
+  padding: 10px;
+  font-size: 14px;
   border: none;
   border-radius: 25px;
   cursor: pointer;
-  transition: transform 0.3s, background-color 0.3s;
+  transition: background-color 0.3s, transform 0.3s;
 }
 
-.registration-form button:hover {
+button[type="submit"] {
+  background-color: #1a5d75;
+  color: #fff;
+}
+
+button[type="submit"]:hover {
   background-color: #144c5c;
   transform: scale(1.05);
 }
 
-/* Error message */
-.registration-form .error-text {
-  color: #ff4d4f;
+.login-button {
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 8px;
   font-size: 14px;
-  margin-top: 15px;
-  /* Added more spacing for better visibility */
-  text-align: center;
+  border-radius: 25px;
 }
 
-/* Responsive design */
+.login-button:hover {
+  background-color: #24333f;
+  transform: scale(1.05);
+}
+
+.error-text {
+  color: #ff4d4f;
+  font-size: 12px;
+  text-align: center;
+  background-color: rgba(255, 77, 79, 0.1);
+  padding: 0.4rem;
+  border-radius: 16px;
+}
+
+.bottom-text {
+  margin-top: 12px;
+  text-align: left;
+  font-size: 10px;
+}
+
 @media (max-width: 768px) {
   .registration-form {
-    width: 90%;
     padding: 20px;
   }
 
   .registration-form h1 {
     font-size: 1.5rem;
+  }
+  
+  .name-group {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
 }
