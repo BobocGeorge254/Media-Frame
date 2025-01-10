@@ -7,6 +7,7 @@ import Register from './components/authentication/register';
 import Profile from './components/profile/profile';
 import ProcessorUsageList from './components/profile/processor-usage/processor-usage';
 import ProcessorPayments from './components/profile/processor-payments/processor-payments';
+import PaymentSuccess from './components/profile/payment-success';
 import './App.css'
 import ForgotPassword from './components/authentication/forgot-password';
 import ResetPassword from './components/authentication/reset-password';
@@ -107,6 +108,15 @@ const App: React.FC = () => {
         <Route path="/register" element={<Register onRegister={() => navigate('/login')} />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
+        <Route
+          path="/payment-success"
+          element={
+            
+              <PaymentSuccess token={token} />
+           
+          }
+        />
+       
         {/* Protected Route with Processor */}
         <Route
           path="/processor"
@@ -148,6 +158,8 @@ const App: React.FC = () => {
             )
           }
         />
+         
+       
       </Routes>
     </div>
   );

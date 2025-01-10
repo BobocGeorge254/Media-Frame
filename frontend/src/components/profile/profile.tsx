@@ -45,7 +45,7 @@ const Profile: React.FC<ProfileProps> = ({ token }) => {
       priceId: 'price_1QdwivRZZTayXP3ZAb0BM0ry',
     },
     {
-      name: 'Enterprise',
+      name: 'Premium',
       price: '$100/month',
       features: [
         'Unlimited audio/video processing tasks',
@@ -97,6 +97,31 @@ const Profile: React.FC<ProfileProps> = ({ token }) => {
     return <div className="Profile">No profile data available</div>;
   }
 
+  const handlePayment = async (priceId: string) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/payments/stripe-checkout/${priceId}/`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Payment initiation failed');
+      }
+
+      // Get the redirect URL from response
+      const data = await response.json();
+      // Redirect to Stripe checkout
+      window.location.href = data.url;
+
+    } catch (error) {
+      console.error('Payment error:', error);
+      setError('Payment initialization failed');
+    }
+  };
+
   return (
     <div className="Profile">
       <h1>User Profile</h1>
@@ -104,6 +129,7 @@ const Profile: React.FC<ProfileProps> = ({ token }) => {
         <button onClick={() => navigate('/profile/processor-usage')}>Usage</button>
         <button onClick={() => navigate('/profile/processor-payments')}>Payments</button>
       </div>
+
       <div className="profile-details">
         <p><strong>Username:</strong> {profile.username}</p>
         <p><strong>Email:</strong> {profile.email}</p>
@@ -127,14 +153,13 @@ const Profile: React.FC<ProfileProps> = ({ token }) => {
               ))}
             </ul>
             {tier.name !== 'Free' ? (
-              <form action={`http://localhost:8000/api/payments/stripe-checkout/${tier.priceId}/`} method="POST">
-                <button 
-                  className="select-plan-button"
-                  disabled={profile.tier.toLowerCase() === tier.name.toLowerCase()}
-                >
-                  {profile.tier.toLowerCase() === tier.name.toLowerCase() ? 'Your Current Plan' : 'Select Plan'}
-                </button>
-              </form>
+              <button 
+                className="select-plan-button"
+                disabled={profile.tier.toLowerCase() === tier.name.toLowerCase()}
+                onClick={() => tier.priceId && handlePayment(tier.priceId)}
+              >
+                {profile.tier.toLowerCase() === tier.name.toLowerCase() ? 'Your Current Plan' : 'Select Plan'}
+              </button>
             ) : (
               <button
                 className="select-plan-button"
