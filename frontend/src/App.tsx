@@ -5,6 +5,8 @@ import Login from './components/authentication/login';
 import Processor from './components/processor/processor';
 import Register from './components/authentication/register';
 import Profile from './components/profile/profile';
+import ProcessorUsageList from './components/profile/processor-usage/processor-usage';
+import ProcessorPayments from './components/profile/processor-payments/processor-payments';
 import './App.css'
 import ForgotPassword from './components/authentication/forgot-password';
 import ResetPassword from './components/authentication/reset-password';
@@ -22,7 +24,7 @@ const App: React.FC = () => {
       setIsLoggedIn(true);
       setToken(storedAccessToken);
       setRefreshToken(storedRefreshToken);
-      navigate('/processor'); // Redirect to the processor if tokens are valid
+      //navigate('/processor'); // Redirect to the processor if tokens are valid
     }
   }, []);
 
@@ -121,6 +123,26 @@ const App: React.FC = () => {
           element={
             isLoggedIn ? (
               <Profile token={token} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/profile/processor-usage"
+          element={
+            isLoggedIn ? (
+              <ProcessorUsageList token={token} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/profile/processor-payments"
+          element={
+            isLoggedIn ? (
+              <ProcessorPayments token={token} />
             ) : (
               <Navigate to="/login" />
             )

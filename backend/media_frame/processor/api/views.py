@@ -9,11 +9,12 @@ from processor.noisecancel import noisecancel_audio
 from processor.bassboost import bassboost_audio
 from processor.speechidentifier import speechidentifier_audio
 from processor.speedup import speedup_audio
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
+from authentication.models import CustomUser
 from rest_framework import permissions
+from processor.models import ProcessorUsage
+from django.utils import timezone
+from .serializer import ProcessorUsageSerializer
 
-@method_decorator(csrf_exempt, name='dispatch')
 class TranscriptionAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser]
@@ -23,23 +24,41 @@ class TranscriptionAPIView(APIView):
 
         if not audio_file:
             return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if CustomUser.objects.has_reached_limit(request.user):
+            return Response(
+                {"error": "You have reached your daily processing limit."},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         try:
             transcript = transcribe_audio(audio_file)
+
+            ProcessorUsage.objects.create(
+                user=request.user,
+                processor_type='transcription',
+                file=audio_file,
+                timestamp=timezone.now()
+            )
+
             return Response({"transcript": transcript}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         
-@method_decorator(csrf_exempt, name='dispatch')
 class PitchShiftingAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser]
     
     def post(self, request, *args, **kwargs):
-        print("Request data:", request.data)
-        print("Request files:", request.FILES)
+        
         audio_file = request.FILES.get('file')
+
+        if CustomUser.objects.has_reached_limit(request.user):
+            return Response(
+                {"error": "You have reached your daily processing limit."},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         if not audio_file:
             return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
@@ -55,6 +74,13 @@ class PitchShiftingAPIView(APIView):
             # Perform pitch shifting
             new_audio_path = shift_audio(audio_file, n_steps)
 
+            ProcessorUsage.objects.create(
+                user=request.user,
+                processor_type='pitch_shift',
+                file=audio_file,
+                timestamp=timezone.now()
+            )
+
             # Serve the pitch-shifted audio file as a download
             response = FileResponse(open(new_audio_path, 'rb'), as_attachment=True)
             response['Content-Disposition'] = f'attachment; filename="shifted_audio.mp3"'
@@ -65,7 +91,6 @@ class PitchShiftingAPIView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         
-@method_decorator(csrf_exempt, name='dispatch')
 class NoiseCancelAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser]
@@ -75,10 +100,24 @@ class NoiseCancelAPIView(APIView):
 
         if not audio_file:
             return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if CustomUser.objects.has_reached_limit(request.user):
+            return Response(
+                {"error": "You have reached your daily processing limit."},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         try:
             # Perform noise cancellation
             new_audio_path = noisecancel_audio(audio_file)
+
+            ProcessorUsage.objects.create(
+                user=request.user,
+                processor_type='noise_cancel',
+                file=audio_file,
+                timestamp=timezone.now()
+            )
+
 
             # Serve the noise-canceled audio file as a download
             response = FileResponse(open(new_audio_path, 'rb'), as_attachment=True)
@@ -90,7 +129,6 @@ class NoiseCancelAPIView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
-@method_decorator(csrf_exempt, name='dispatch')
 class BassBoostAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser]
@@ -100,10 +138,23 @@ class BassBoostAPIView(APIView):
 
         if not audio_file:
             return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if CustomUser.objects.has_reached_limit(request.user):
+            return Response(
+                {"error": "You have reached your daily processing limit."},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         try:
             # Perform bass boosting
             new_audio_path = bassboost_audio(audio_file)
+
+            ProcessorUsage.objects.create(
+                user=request.user,
+                processor_type='bass_boost',
+                file=audio_file,
+                timestamp=timezone.now()
+            )
 
             # Serve the bass-boosted audio file as a download
             response = FileResponse(open(new_audio_path, 'rb'), as_attachment=True)
@@ -115,7 +166,6 @@ class BassBoostAPIView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
-@method_decorator(csrf_exempt, name='dispatch')
 class SpeechIdentifierAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser]
@@ -125,18 +175,30 @@ class SpeechIdentifierAPIView(APIView):
 
         if not audio_file:
             return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if CustomUser.objects.has_reached_limit(request.user):
+            return Response(
+                {"error": "You have reached your daily processing limit."},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         try:
             # Identify speech in the audio file
             speech_info = speechidentifier_audio(audio_file)
+
+            ProcessorUsage.objects.create(
+                user=request.user,
+                processor_type='speech_identifier',
+                file=audio_file,
+                timestamp=timezone.now()
+            )
 
             return Response({"speech_info": speech_info}, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-        
-@method_decorator(csrf_exempt, name='dispatch')
+
 class SpeedUpAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser]
@@ -146,6 +208,12 @@ class SpeedUpAPIView(APIView):
 
         if not audio_file:
             return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if CustomUser.objects.has_reached_limit(request.user):
+            return Response(
+                {"error": "You have reached your daily processing limit."},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         try:
             # Get the speed factor from the request (default to 1.5 if not provided)
@@ -153,6 +221,14 @@ class SpeedUpAPIView(APIView):
 
             # Perform speed-up
             new_audio_path = speedup_audio(audio_file, speed_factor)
+
+            ProcessorUsage.objects.create(
+                user=request.user,
+                processor_type='speed_up',
+                file=audio_file,
+                timestamp=timezone.now()
+            )
+
 
             # Serve the processed audio file as a download
             response = FileResponse(open(new_audio_path, 'rb'), as_attachment=True)
@@ -162,4 +238,12 @@ class SpeedUpAPIView(APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+class ProcessorUsageAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
 
+    def get(self, request, *args, **kwargs):
+        processor_usages = ProcessorUsage.objects.filter(user=request.user)
+        serializer = ProcessorUsageSerializer(processor_usages, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -99,8 +99,6 @@ class UserDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, user_id):
-        print("user_id:", user_id, "Type:", type(user_id))
-        print("request.user.id:", request.user.id, "Type:", type(request.user.id))
 
         if request.user.id != user_id:
             return Response(

@@ -1,0 +1,127 @@
+/* Base styles */
+.processor-usage {
+    min-height: 100vh;
+    padding: 2rem;
+    background:radial-gradient(circle, #200225, #00001a);
+    color: #e2e8f0;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Header styles */
+  h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #93c5fd;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  /* Table container with frosted glass effect */
+  .table-container {
+    background-color: rgba(30, 58, 138, 0.3);
+    border-radius: 0.75rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(8px);
+    overflow-x: auto;
+  }
+  
+  /* Table styles */
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  
+  thead tr {
+    border-bottom: 1px solid #1e40af;
+  }
+  
+  th {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    color: #93c5fd;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  
+  td {
+    padding: 1rem 1.5rem;
+    color: #e2e8f0;
+  }
+  
+  tbody tr {
+    border-bottom: 1px solid rgba(30, 64, 175, 0.3);
+    transition: background-color 0.2s ease;
+  }
+  
+  tbody tr:last-child {
+    border-bottom: none;
+  }
+  
+  tbody tr:hover {
+    background-color: rgba(30, 64, 175, 0.2);
+  }
+  
+  /* Processor type pill */
+  .processor-type {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: rgba(30, 64, 175, 0.3);
+    border-radius: 9999px;
+    color: #93c5fd;
+  }
+  
+  /* Loading state */
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25rem;
+    color: #93c5fd;
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  
+  /* Error state */
+  .error {
+    color: #f87171;
+    background-color: rgba(248, 113, 113, 0.1);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+  }
+  
+  /* Empty state */
+  .empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25rem;
+    color: #93c5fd;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .processor-usage {
+      padding: 1rem;
+    }
+  
+    th, td {
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+    }
+  
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+  }

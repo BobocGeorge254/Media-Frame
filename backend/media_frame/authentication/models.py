@@ -1,11 +1,25 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.utils import timezone
+from processor.models import ProcessorUsage
 
 class Tier(models.TextChoices):
     FREE = 'free', 'Free'
     BASIC = 'basic', 'Basic'
     PREMIUM = 'premium', 'Premium'
+
+
+class TierLimits:
+    LIMITS = {
+        Tier.FREE: 2,  
+        Tier.BASIC: 10, 
+        Tier.PREMIUM: None
+    }
+
+    @classmethod
+    def get_limit(cls, tier):
+        return cls.LIMITS.get(tier)
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, tier=Tier.FREE, **extra_fields):
@@ -17,6 +31,14 @@ class CustomUserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
+    
+    def has_reached_limit(self, user):
+        limit = TierLimits.get_limit(user.tier)
+        if limit is None:  
+            return False
+        today = timezone.now().date()
+        usage_count = ProcessorUsage.objects.filter(user=user, timestamp__date=today).count()
+        return usage_count >= limit
 
 
 class CustomUser(AbstractBaseUser):
@@ -42,3 +64,4 @@ class CustomUser(AbstractBaseUser):
 
     def __str__(self):
         return self.username
+

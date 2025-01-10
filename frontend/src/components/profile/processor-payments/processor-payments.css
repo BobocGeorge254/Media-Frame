@@ -1,0 +1,8 @@
+.processor-payments {
+    min-height: 100vh;
+    padding: 2rem;
+    background:radial-gradient(circle, #200225, #00001a);
+    color: #e2e8f0;
+    font-family: 'Arial', sans-serif;
+  }
+  

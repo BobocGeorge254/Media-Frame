@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./profile.css";
 
 interface UserProfile {
@@ -19,6 +20,7 @@ const Profile: React.FC<ProfileProps> = ({ token }) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const tiers = [
     {
@@ -98,6 +100,10 @@ const Profile: React.FC<ProfileProps> = ({ token }) => {
   return (
     <div className="Profile">
       <h1>User Profile</h1>
+      <div className="button-container">
+        <button onClick={() => navigate('/profile/processor-usage')}>Usage</button>
+        <button onClick={() => navigate('/profile/processor-payments')}>Payments</button>
+      </div>
       <div className="profile-details">
         <p><strong>Username:</strong> {profile.username}</p>
         <p><strong>Email:</strong> {profile.email}</p>
