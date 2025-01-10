@@ -7,6 +7,19 @@ interface TranscriptionResponse {
   error?: string;
 }
 
+interface SpeechIdentifierResponse {
+  speech_info?: {
+    transcription: string;
+    speaker_segments: Array<{
+      start_time: number;
+      end_time: number;
+      speaker: string;
+      text: string;
+    }>;
+  };
+  error?: string;
+}
+
 interface ProcessorProps {
   token: string;
 }
@@ -97,11 +110,19 @@ const Processor: React.FC<ProcessorProps> = ({ token }) => {
         body: formData,
       });
 
-      if (action === 'transcribe' || action === 'speechidentifier') {
+      if (action === 'transcribe') {
         const result: TranscriptionResponse = await response.json();
 
         if (response.ok) {
           setOutput(result.transcript || '');
+        } else {
+          setError(result.error || 'An error occurred during processing');
+        }
+      } else if (action === 'speechidentifier') {
+        const result: SpeechIdentifierResponse = await response.json();
+
+        if (response.ok && result.speech_info) {
+          setOutput(JSON.stringify(result.speech_info)); // Store the `speech_info` object for rendering
         } else {
           setError(result.error || 'An error occurred during processing');
         }
@@ -197,16 +218,77 @@ const Processor: React.FC<ProcessorProps> = ({ token }) => {
       {output && action === 'transcribe' && (
         <div className="output-box">
           <h2>Transcription:</h2>
-          <pre>{output}</pre>
+          <div className="transcription-text">
+            <pre>{output}</pre>
+            <button className="download-link" onClick={() => {
+              const blob = new Blob([output], { type: 'text/plain' });
+              const link = document.createElement('a');
+              link.href = URL.createObjectURL(blob);
+              link.download = `transcription_response.txt`;
+              link.click();
+              URL.revokeObjectURL(link.href);
+            }}>
+              Download as TXT
+            </button>
+          </div>
         </div>
       )}
 
       {output && action === 'speechidentifier' && (
         <div className="output-box">
-          <h2>Speech Identification:</h2>
-          <pre>{output}</pre>
+          <h2>Speech Identification Results:</h2>
+          <div className="segments-container">
+            {(() => {
+              try {
+                const result = typeof output === 'string' ? JSON.parse(output) : output;
+
+                // console.log("Array.isArray(result.speech_info.speaker_segments)", Array.isArray(result.speech_info.speaker_segments));
+                if (
+                  result &&
+                  Array.isArray(result.speaker_segments) &&
+                  result.speaker_segments.length > 0
+                ) {
+
+                  return (
+                    <>
+                      <div className="transcription-container">
+                        <h3>Full Transcription:</h3>
+                        <p>{result.transcription}</p>
+                      </div>
+                      {result.speaker_segments.map((segment: any, index: number) => (
+                        <div key={index} className="segment-card">
+                          <p><strong>Speaker:</strong> {segment.speaker}</p>
+                          <p><strong>Text:</strong> {segment.text}</p>
+                          <p>
+                            <strong>Start Time:</strong> {segment.start_time.toFixed(2)}s |
+                            <strong> End Time:</strong> {segment.end_time.toFixed(2)}s
+                          </p>
+                        </div>
+                      ))}
+                    </>
+                  );
+                } else {
+                  return <p>No speaker segments found in the response.</p>;
+                }
+              } catch (err) {
+                console.error("Error parsing speechidentifier response:", err);
+                return <p>Error parsing response data.</p>;
+              }
+            })()}
+          </div>
+          <button className="download-link" onClick={() => {
+            const blob = new Blob([output], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `speechidentifier_response.txt`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+          }}>
+            Download as TXT
+          </button>
         </div>
       )}
+
 
       {output && (action === 'shift' || action === 'noisecancel' || action === 'bassboost' || action === 'speedup') && (
         <div className="output-box">

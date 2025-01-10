@@ -11,14 +11,15 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
   const [email, setEmail] = useState<string>('');
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
   const navigate = useNavigate();
 
   const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
-    
-    if (!username || !email || !firstName || !lastName || !password) {
+
+    if (!username || !email || !firstName || !lastName || !phone || !password) {
       setError('All fields are required');
       return;
     }
@@ -34,6 +35,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
       email,
       first_name: firstName,
       last_name: lastName,
+      phone_number: phone,
       password,
     };
 
@@ -103,6 +105,16 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
                 placeholder="Last name"
               />
             </div>
+            <div className="form-group">
+              <label htmlFor="phone">Phone Number</label>
+              <input
+                type="text"
+                id="phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Phone number"
+              />
+            </div>
           </div>
           <div className="form-group">
             <label htmlFor="password">Password</label>
@@ -125,7 +137,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister }) => {
           </div>
         </form>
         <p className="bottom-text">*you will be granted free tier access. Make sure to upgrade in the profile section.</p>
-        
+
       </div>
     </div>
   );

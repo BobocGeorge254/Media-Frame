@@ -25,7 +25,7 @@ const App: React.FC = () => {
       navigate('/processor'); // Redirect to the processor if tokens are valid
     }
   }, []);
-  
+
 
   const handleLogin = (accessToken: string, refreshToken: string) => {
     setIsLoggedIn(true);
@@ -93,7 +93,7 @@ const App: React.FC = () => {
               </button>
             </>
           )}
-          
+
         </div>
       </header>
 
