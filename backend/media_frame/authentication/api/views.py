@@ -155,15 +155,9 @@ class ResetPasswordView(APIView):
 class UserDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, user_id):
+    def get(self, request):
 
-        if request.user.id != user_id:
-            return Response(
-                {"error": "You are not authorized to access this user's details."},
-                status=status.HTTP_403_FORBIDDEN,
-            )
-
-        user = CustomUser.objects.get(id=user_id)
+        user = CustomUser.objects.get(id=request.user.id)
         user_data = {
             "username": user.username,
             "email": user.email,
@@ -176,34 +170,3 @@ class UserDetailView(APIView):
         return Response(user_data, status=status.HTTP_200_OK)
     
 
-class UserUpdateView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def put(self, request, user_id):
-        # Check if the user trying to update their details is the correct user
-        if request.user.id != user_id:
-            return Response(
-                {"error": "You are not authorized to update this user's details."},
-                status=status.HTTP_403_FORBIDDEN,
-            )
-
-        # Fetch the user object
-        try:
-            user = CustomUser.objects.get(id=user_id)
-        except CustomUser.DoesNotExist:
-            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-
-        # Validate the data passed in the request body
-        data = request.data
-
-        # You can allow the user to update specific fields (for example: tier, first_name, last_name, etc.)
-        for key, value in data.items():
-            if hasattr(user, key):
-                setattr(user, key, value)
-
-        user.save()
-
-        return Response(
-            {"message": "User details updated successfully."},
-            status=status.HTTP_200_OK,
-        )

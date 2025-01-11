@@ -28,7 +28,7 @@ const Profile: React.FC<ProfileProps> = ({ token }) => {
       price: '$0/month',
       features: [
         '2 audio/video processing tasks per day',
-        'Access to transcribe and noisecancel',
+        'Access to bassboost and noisecancel',
         'Basic processing speed',
       ],
       priceId: null
@@ -60,10 +60,7 @@ const Profile: React.FC<ProfileProps> = ({ token }) => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const decodedToken = JSON.parse(atob(token.split('.')[1]));
-        const userId = decodedToken.user_id;
-
-        const response = await fetch(`http://localhost:8000/api/auth/user/${userId}/`, {
+        const response = await fetch(`http://localhost:8000/api/auth/user/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

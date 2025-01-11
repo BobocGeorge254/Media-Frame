@@ -39,6 +39,9 @@ class CustomUserManager(BaseUserManager):
         today = timezone.now().date()
         usage_count = ProcessorUsage.objects.filter(user=user, timestamp__date=today).count()
         return usage_count >= limit
+    
+    def get_user_tier(self, user):
+        return user.tier
 
 
 class CustomUser(AbstractBaseUser):

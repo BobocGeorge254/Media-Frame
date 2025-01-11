@@ -26,7 +26,7 @@ Follow these steps to set up and start the application:
 ### 3.Install requirements
 
     Install the necessary dependencies from the requirements.txt file:
-    - pip install requirements.txt
+    - pip install -r requirements.txt
 
     If you install new dependencies at any point, please use:
     - pip freeze > requirements.txt

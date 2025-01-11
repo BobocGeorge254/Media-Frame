@@ -9,7 +9,7 @@ from processor.noisecancel import noisecancel_audio
 from processor.bassboost import bassboost_audio
 from processor.speechidentifier import speechidentifier_audio
 from processor.speedup import speedup_audio
-from authentication.models import CustomUser
+from authentication.models import CustomUser, Tier
 from rest_framework import permissions
 from processor.models import ProcessorUsage
 from django.utils import timezone
@@ -29,6 +29,12 @@ class TranscriptionAPIView(APIView):
         if CustomUser.objects.has_reached_limit(request.user):
             return Response(
                 {"error": "You have reached your daily processing limit."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        if CustomUser.objects.get_user_tier(request.user) == Tier.FREE:
+            return Response(
+                {"error": "You don't have permission to make this operation."},
                 status=status.HTTP_403_FORBIDDEN
             )
 
@@ -58,6 +64,12 @@ class PitchShiftingAPIView(APIView):
         if CustomUser.objects.has_reached_limit(request.user):
             return Response(
                 {"error": "You have reached your daily processing limit."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        if CustomUser.objects.get_user_tier(request.user) == Tier.FREE:
+            return Response(
+                {"error": "You don't have permission to make this operation."},
                 status=status.HTTP_403_FORBIDDEN
             )
 
@@ -182,6 +194,12 @@ class SpeechIdentifierAPIView(APIView):
                 {"error": "You have reached your daily processing limit."},
                 status=status.HTTP_403_FORBIDDEN
             )
+        
+        if CustomUser.objects.get_user_tier(request.user) == Tier.FREE:
+            return Response(
+                {"error": "You don't have permission to make this operation."},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         try:
             # Identify speech in the audio file
@@ -213,6 +231,13 @@ class SpeedUpAPIView(APIView):
         if CustomUser.objects.has_reached_limit(request.user):
             return Response(
                 {"error": "You have reached your daily processing limit."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        
+        if CustomUser.objects.get_user_tier(request.user) == Tier.FREE:
+            return Response(
+                {"error": "You don't have permission to make this operation."},
                 status=status.HTTP_403_FORBIDDEN
             )
 
