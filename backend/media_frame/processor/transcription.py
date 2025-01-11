@@ -2,7 +2,7 @@ import tempfile
 import os
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-def transcribe_audio(audio_file: InMemoryUploadedFile) -> str:
+def transcribe_audio(audio_file: InMemoryUploadedFile, language: str = "en") -> str:
     global model
 
     if model is None:
@@ -21,7 +21,9 @@ def transcribe_audio(audio_file: InMemoryUploadedFile) -> str:
 
     # Use the temporary file path for transcription
     try:
-        result = model.transcribe(temp_file_path)
+        print(language)
+        print("-----------------------------")
+        result = model.transcribe(temp_file_path, language=language)
         return result["text"]
     finally:
         # Clean up the temp file

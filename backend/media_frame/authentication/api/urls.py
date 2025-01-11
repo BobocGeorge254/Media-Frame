@@ -1,6 +1,6 @@
 # authentication/api/urls.py
 from django.urls import path
-from .views import ForgotPasswordView, ResetPasswordView, UserRegisterView, UserLoginView, UserLogoutView, UserDetailView, UserUpdateView
+from .views import ConfirmEmailView, ForgotPasswordView, ResetPasswordView, UserRegisterView, UserLoginView, UserLogoutView, UserDetailView, UserUpdateView
 
 urlpatterns = [
     path('register/', UserRegisterView.as_view(), name='register'),
@@ -10,4 +10,6 @@ urlpatterns = [
     path('reset-password/<uidb64>/<token>/', ResetPasswordView.as_view(), name="reset-password"),
     path('user/<int:user_id>/', UserDetailView.as_view(), name='user-detail'),
     path('user/<int:user_id>/update/', UserUpdateView.as_view(), name='user-update'),
+    path('confirm-email/<uidb64>/<token>/', ConfirmEmailView.as_view(), name='confirm-email'),
+
 ]

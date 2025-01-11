@@ -49,6 +49,7 @@ class CustomUser(AbstractBaseUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     date_joined = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=True)
+    is_email_confirmed = models.BooleanField(default=False)  
 
     # Payment tier field
     tier = models.CharField(

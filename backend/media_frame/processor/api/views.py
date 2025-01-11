@@ -21,10 +21,11 @@ class TranscriptionAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         audio_file = request.FILES.get('file')
+        language = request.data.get('language', 'en')  # Default to English if not provided
 
         if not audio_file:
             return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         if CustomUser.objects.has_reached_limit(request.user):
             return Response(
                 {"error": "You have reached your daily processing limit."},
@@ -32,7 +33,7 @@ class TranscriptionAPIView(APIView):
             )
 
         try:
-            transcript = transcribe_audio(audio_file)
+            transcript = transcribe_audio(audio_file, language)
 
             ProcessorUsage.objects.create(
                 user=request.user,
