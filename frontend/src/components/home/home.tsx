@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './home.css';
+import logo from '../../logo.png';
+
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ const Home: React.FC = () => {
       <div className="card-container">
         <header className="card-header">
           <div className="app-title">
-            <div className="logo-icon">MF</div>
+            <img src={logo} alt="Media Frame Logo" className="logo-icon" />
             <h1>Media Frame</h1>
           </div>
           <p>Transform your audio and video like a pro, without the cost.</p>

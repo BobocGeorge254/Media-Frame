@@ -1,14 +1,15 @@
 /* Main container for the processor */
 .Processor {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    /* Arrange items vertically */
     align-items: center;
     min-height: 100vh;
     width: 100%;
     background: radial-gradient(circle, #200225, #00001a);
     font-family: 'Arial', sans-serif;
     color: #f4f4f9;
-    padding: 10px;
+    padding: 20px;
     box-sizing: border-box;
     overflow-y: auto;
 }
@@ -20,11 +21,14 @@
     border-radius: 25px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     width: 100%;
-    max-width: 400px;
+    max-width: 600px;
+    /* Adjusted for a wider form layout */
     display: flex;
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
+    margin-bottom: 20px;
+    /* Add space below the form */
 }
 
 /* Form title */
@@ -57,7 +61,7 @@
 .Processor input[type="number"],
 .Processor input[type="file"] {
     width: 100%;
-    padding: 8px 12px;
+    padding: 10px;
     font-size: 14px;
     border: 1px solid #092244;
     border-radius: 5px;
@@ -92,6 +96,28 @@
     transform: scale(1.05);
 }
 
+/* Audio player */
+.audio-player {
+    width: 100%;
+    max-width: 600px;
+    /* Align with the form width */
+    margin: 20px 0;
+    /* Add vertical spacing */
+    text-align: center;
+}
+
+.audio-player h2 {
+    font-size: 16px;
+    color: #3fa6d6;
+    margin-bottom: 10px;
+}
+
+audio {
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 8px;
+}
+
 /* Error message */
 .Processor .error-text {
     color: #ff4d4f;
@@ -103,14 +129,17 @@
 /* Output styling */
 .Processor .output-box {
     margin-top: 20px;
-    padding: 15px;
+    padding: 20px;
     background-color: #061d3a;
     border-radius: 15px;
     border: 1px solid #092244;
     color: #cce7ff;
     width: 100%;
-    max-width: 800px;
+    max-width: 600px;
+    /* Align with the form width */
     box-sizing: border-box;
+    overflow-x: auto;
+    /* Horizontal scroll for long text */
 }
 
 .Processor .output-box h2 {
@@ -118,25 +147,26 @@
     color: #3fa6d6;
 }
 
+/* Result transcription styling */
 .Processor .output-box pre {
     background-color: #092244;
-    padding: 10px;
+    padding: 15px;
     border-radius: 8px;
     font-size: 12px;
     color: #cce7ff;
     text-align: left;
-    overflow-x: auto;
+    white-space: pre-wrap;
 }
 
 /* Download link */
 .Processor .download-link {
     margin-top: 8px;
-    padding: 8px 15px;
+    padding: 10px 20px;
     background-color: #1a5d75;
     color: white;
     border-radius: 25px;
     text-decoration: none;
-    font-size: 12px;
+    font-size: 14px;
     display: inline-block;
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
@@ -146,11 +176,19 @@
     transform: scale(1.05);
 }
 
+/* Loading spinner */
 .loading-spinner {
-    margin: 5px;
+    margin-top: 20px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.loading-spinner p {
+    color: #cce7ff;
+    font-size: 14px;
+    margin-top: 10px;
 }
 
 /* Parent container for speaker segments */
@@ -194,17 +232,12 @@
     /* Highlight color for strong text */
 }
 
-/* Responsive grid for smaller screens */
-@media (max-width: 1024px) {
-    .segments-container {
-        grid-template-columns: repeat(2, 1fr);
-        /* Two cards per row */
-    }
-}
-
+/* Responsive Design */
 @media (max-width: 768px) {
-    .segments-container {
-        grid-template-columns: 1fr;
-        /* One card per row */
+
+    .Processor form,
+    .audio-player,
+    .output-box {
+        max-width: 100%;
     }
 }

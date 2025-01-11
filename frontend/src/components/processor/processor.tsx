@@ -26,7 +26,9 @@ interface ProcessorProps {
 
 const Processor: React.FC<ProcessorProps> = ({ token }) => {
   const [file, setFile] = useState<File | null>(null);
+  const [fileUrl, setFileUrl] = useState<string | null>(null); // URL for submitted file playback
   const [output, setOutput] = useState<string>(''); // For transcription or other outputs
+  const [outputUrl, setOutputUrl] = useState<string | null>(null); // URL for result audio playback
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false); // Loading state
   const [action, setAction] = useState<
@@ -34,18 +36,20 @@ const Processor: React.FC<ProcessorProps> = ({ token }) => {
   >('transcribe'); // Action selector
   const [nSteps, setNSteps] = useState<number>(2); // Default pitch shift semitones
   const [speedFactor, setSpeedFactor] = useState<number>(1.5); // Default speed-up factor
+  const [language, setLanguage] = useState<string>('en'); // Default language for transcription
 
   // Handle file input change
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
 
     if (selectedFile) {
-      // Check if the file is an MP3
       if (selectedFile.type === 'audio/mp3' || selectedFile.name.endsWith('.mp3')) {
         setFile(selectedFile);
+        setFileUrl(URL.createObjectURL(selectedFile)); // Generate URL for playback
         setError('');
       } else {
         setFile(null);
+        setFileUrl(null);
         setError('Please select a valid MP3 file');
       }
     }
@@ -63,6 +67,7 @@ const Processor: React.FC<ProcessorProps> = ({ token }) => {
       | 'speedup'
     );
     setOutput('');
+    setOutputUrl(null);
     setError('');
   };
 
@@ -78,6 +83,7 @@ const Processor: React.FC<ProcessorProps> = ({ token }) => {
     setLoading(true);
     setError('');
     setOutput('');
+    setOutputUrl(null);
 
     const formData = new FormData();
     formData.append('file', file);
@@ -88,6 +94,10 @@ const Processor: React.FC<ProcessorProps> = ({ token }) => {
 
     if (action === 'speedup') {
       formData.append('speed_factor', speedFactor.toString());
+    }
+
+    if (action === 'transcribe') {
+      formData.append('language', language); // Add selected language to the form data
     }
 
     const endpointMap: Record<string, string> = {
@@ -127,11 +137,10 @@ const Processor: React.FC<ProcessorProps> = ({ token }) => {
           setError(result.error || 'An error occurred during processing');
         }
       } else {
-        // For noisecancel, bassboost, shift, and speedup
         if (response.ok) {
           const blob = await response.blob();
           const url = URL.createObjectURL(blob);
-          setOutput(url);
+          setOutputUrl(url); // Set URL for playback
         } else {
           const result = await response.json();
           setError(result.error || 'An error occurred during processing');
@@ -158,6 +167,24 @@ const Processor: React.FC<ProcessorProps> = ({ token }) => {
             <option value="speedup">Speed Up</option>
           </select>
         </div>
+
+        {action === 'transcribe' && (
+          <div className="form-group">
+            <label htmlFor="language-select">Select Language:</label>
+            <select
+              id="language-select"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+            >
+              <option value="en">English</option>
+              <option value="es">Spanish</option>
+              <option value="de">German</option>
+              <option value="fr">French</option>
+              <option value="ro">Romanian</option>
+              {/* Add more languages as required */}
+            </select>
+          </div>
+        )}
 
         {action === 'shift' && (
           <div className="form-group">
@@ -197,6 +224,13 @@ const Processor: React.FC<ProcessorProps> = ({ token }) => {
         </button>
       </form>
 
+      {fileUrl && (
+        <div className="audio-player">
+          <h2>Uploaded File:</h2>
+          <audio controls src={fileUrl}></audio>
+        </div>
+      )}
+
       {loading && (
         <div className="loading-spinner">
           <Oval
@@ -217,20 +251,8 @@ const Processor: React.FC<ProcessorProps> = ({ token }) => {
 
       {output && action === 'transcribe' && (
         <div className="output-box">
-          <h2>Transcription:</h2>
-          <div className="transcription-text">
-            <pre>{output}</pre>
-            <button className="download-link" onClick={() => {
-              const blob = new Blob([output], { type: 'text/plain' });
-              const link = document.createElement('a');
-              link.href = URL.createObjectURL(blob);
-              link.download = `transcription_response.txt`;
-              link.click();
-              URL.revokeObjectURL(link.href);
-            }}>
-              Download as TXT
-            </button>
-          </div>
+          <h2>Result:</h2>
+          <pre>{output}</pre>
         </div>
       )}
 
@@ -242,13 +264,11 @@ const Processor: React.FC<ProcessorProps> = ({ token }) => {
               try {
                 const result = typeof output === 'string' ? JSON.parse(output) : output;
 
-                // console.log("Array.isArray(result.speech_info.speaker_segments)", Array.isArray(result.speech_info.speaker_segments));
                 if (
                   result &&
                   Array.isArray(result.speaker_segments) &&
                   result.speaker_segments.length > 0
                 ) {
-
                   return (
                     <>
                       <div className="transcription-container">
@@ -289,11 +309,11 @@ const Processor: React.FC<ProcessorProps> = ({ token }) => {
         </div>
       )}
 
-
-      {output && (action === 'shift' || action === 'noisecancel' || action === 'bassboost' || action === 'speedup') && (
-        <div className="output-box">
+      {outputUrl && (
+        <div className="audio-player">
           <h2>Processed Audio:</h2>
-          <a href={output} download={`${action}_audio.mp3`} className="download-link">
+          <audio controls src={outputUrl}></audio>
+          <a href={outputUrl} download={`${action}_audio.mp3`} className="download-link">
             Download Processed Audio
           </a>
         </div>

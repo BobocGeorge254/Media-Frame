@@ -1,0 +1,40 @@
+/* Container for Email Confirmation page */
+.email-confirmation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: radial-gradient(circle, #200225, #00001a);
+    font-family: 'Arial', sans-serif;
+    color: #f4f4f9;
+}
+
+/* Box styling */
+.email-confirmation-box {
+    background: #04152b;
+    padding: 25px;
+    border-radius: 25px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.email-confirmation-box h1 {
+    margin-bottom: 20px;
+    font-size: 1.75rem;
+    color: #3fa6d6;
+}
+
+/* Feedback messages */
+.email-confirmation-box .success-text {
+    color: #4fa94d;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.email-confirmation-box .error-text {
+    color: #ff4d4f;
+    margin-top: 10px;
+    font-size: 0.75rem;
+}

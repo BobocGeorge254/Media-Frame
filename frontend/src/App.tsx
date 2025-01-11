@@ -11,6 +11,9 @@ import PaymentSuccess from './components/profile/payment-success';
 import './App.css'
 import ForgotPassword from './components/authentication/forgot-password';
 import ResetPassword from './components/authentication/reset-password';
+import EmailConfirmation from './components/authentication/email-confirmation';
+import logo from './logo.png';
+
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -70,20 +73,11 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <header className="navbar">
-        {!isLoggedIn && (
-          <div className="navbar-left" onClick={() => navigate('/')}>
-            <div className="logo-icon">MF</div>
-            <h1 className="navbar-title">Media Frame</h1>
-          </div>
-        )}
-
-        {isLoggedIn && (
-          <div className="navbar-left" onClick={() => navigate('/processor')}>
-            <div className="logo-icon">MF</div>
-            <h1 className="navbar-title">Media Frame</h1>
-          </div>
-        )}
-
+        <div className="navbar-left" onClick={() => navigate(isLoggedIn ? '/processor' : '/')}>
+          {/* Use a relative path to access the logo */}
+          <img src={logo} alt="Media Frame Logo" className="logo-icon" />
+          <h1 className="navbar-title">Media Frame</h1>
+        </div>
 
         <div className="navbar-right">
           {isLoggedIn && (
@@ -96,7 +90,6 @@ const App: React.FC = () => {
               </button>
             </>
           )}
-
         </div>
       </header>
 
@@ -108,15 +101,16 @@ const App: React.FC = () => {
         <Route path="/register" element={<Register onRegister={() => navigate('/login')} />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
+        <Route path="/confirm-email/:uid/:token" element={<EmailConfirmation />} />
         <Route
           path="/payment-success"
           element={
-            
-              <PaymentSuccess token={token} />
-           
+
+            <PaymentSuccess token={token} />
+
           }
         />
-       
+
         {/* Protected Route with Processor */}
         <Route
           path="/processor"
@@ -158,8 +152,8 @@ const App: React.FC = () => {
             )
           }
         />
-         
-       
+
+
       </Routes>
     </div>
   );
