@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 import "./profile.css";
 
 interface UserProfile {
@@ -20,6 +21,8 @@ const Profile: React.FC<ProfileProps> = ({ token }) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const { handleLogout } = useAuth();
   const navigate = useNavigate();
 
   const tiers = [
@@ -119,6 +122,26 @@ const Profile: React.FC<ProfileProps> = ({ token }) => {
     }
   };
 
+  const handleAccountDeletion = async () => {
+    try {
+      handleLogout();
+      const response = await fetch(`http://localhost:8000/api/auth/delete-account/`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!response.ok) throw new Error("Failed to delete account");
+      
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Account deletion failed");
+    } finally {
+      setShowModal(false);
+    }
+  };
+
   return (
     <div className="Profile">
       <h1>User Profile</h1>
@@ -135,6 +158,23 @@ const Profile: React.FC<ProfileProps> = ({ token }) => {
         <p><strong>Tier:</strong> {profile.tier}</p>
         <p><strong>Joined:</strong> {new Date(profile.date_joined).toLocaleDateString()}</p>
       </div>
+
+      <button className="delete-account-button" onClick={() => setShowModal(true)}>
+        Delete Account
+      </button>
+
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Confirm Account Deletion</h2>
+            <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+            <div className="modal-actions">
+              <button className="confirm-button" onClick={() => handleAccountDeletion()}>Yes, Delete</button>
+              <button className="cancel-button" onClick={() => setShowModal(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="tier-cards-container">
         {tiers.map((tier, i) => (

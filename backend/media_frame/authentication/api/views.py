@@ -170,3 +170,22 @@ class UserDetailView(APIView):
         return Response(user_data, status=status.HTTP_200_OK)
     
 
+class UserDeleteSelfView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request):
+        try:
+            request.user.delete()
+            
+            return Response(
+                {"message": f"User '{request.user.username}' and all related data have been successfully deleted."},
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return Response(
+                {"error": "Something went wrong while deleting the account."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+    
+

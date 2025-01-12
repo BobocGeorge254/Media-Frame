@@ -7,7 +7,7 @@ interface UseAuthResult {
   isLoggedIn: boolean;
   isInitializing: boolean;
   handleLogin: (accessToken: string, refreshToken: string) => void;
-  handleLogout: () => Promise<void>;
+  handleLogout: (isLocalLogout?: boolean) => Promise<void>;
 }
 
 export const useAuth = (): UseAuthResult => {
@@ -145,31 +145,35 @@ export const useAuth = (): UseAuthResult => {
     navigate('/processor');
   }, [navigate]);
 
-  const handleLogout = async () => {
-    try {
-      const response = await fetch('http://127.0.0.1:8000/api/auth/logout/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          refresh_token: refreshToken,
-        }),
-      });
+  const handleLogout = async (isLocalLogout: boolean = false): Promise<void> => {
+  // First, perform local logout (clear tokens and set login state to false)
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    setToken('');
+    setRefreshToken('');
+    setIsLoggedIn(false);
+    navigate('/login');
 
-      if (!response.ok) {
-        console.error('Logout failed');
+    // If logout is not only local (i.e., server-side logout should be performed), do it
+    if (!isLocalLogout) {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/auth/logout/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            refresh_token: refreshToken,
+          }),
+        });
+
+        if (!response.ok) {
+          console.error('Server-side logout failed');
+        }
+      } catch (error) {
+        console.error('Logout failed:', error);
       }
-    } catch (error) {
-      console.error('Logout failed:', error);
-    } finally {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      setToken('');
-      setRefreshToken('');
-      setIsLoggedIn(false);
-      navigate('/login');
     }
   };
 

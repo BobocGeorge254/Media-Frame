@@ -40,7 +40,7 @@ const App: React.FC = () => {
               <button onClick={() => navigate('/profile')} className="navbar-button profile-button">
                 Profile
               </button>
-              <button onClick={handleLogout} className="navbar-button logout-button">
+              <button onClick={() => handleLogout()} className="navbar-button logout-button">
                 Logout
               </button>
             </>
