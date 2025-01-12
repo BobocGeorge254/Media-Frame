@@ -17,6 +17,34 @@ export const useAuth = (): UseAuthResult => {
   const [isInitializing, setIsInitializing] = useState<boolean>(true);
   const navigate = useNavigate();
 
+  const refreshThreshold = 3 * 60 * 1000; // 3 minutes
+
+  const isTokenExpired = (token: string): boolean => {
+    if (!token) return true;
+    
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const expirationTime = payload.exp * 1000;
+      return Date.now() >= expirationTime;
+    } catch (error) {
+      return true;
+    }
+  };
+
+  const shouldRefresh = (token: string): boolean => {
+    if (!token) return false;
+    
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const expirationTime = payload.exp * 1000;
+      const currentTime = Date.now();
+
+      return currentTime >= expirationTime - refreshThreshold;
+    } catch (error) {
+      return false;
+    }
+  };
+
   const refreshAccessToken = async (currentRefreshToken: string): Promise<{ access: string; refresh?: string } | null> => {
     try {
       const response = await fetch('http://127.0.0.1:8000/api/auth/token/refresh/', {
@@ -40,22 +68,50 @@ export const useAuth = (): UseAuthResult => {
     }
   };
 
-  const refreshThreshold = 3 * 60 * 1000;
+  // Initialize auth state from localStorage with token validation
+  useEffect(() => {
+    const initializeAuth = async () => {
+      const storedAccessToken = localStorage.getItem('accessToken');
+      const storedRefreshToken = localStorage.getItem('refreshToken');
+      
+      if (storedAccessToken && storedRefreshToken) {
+        if (isTokenExpired(storedAccessToken)) {
+          // Token is expired, try to refresh it
+          const result = await refreshAccessToken(storedRefreshToken);
+          if (result) {
+            // Successfully refreshed token
+            const { access, refresh } = result;
+            setToken(access);
+            localStorage.setItem('accessToken', access);
+            
+            if (refresh) {
+              setRefreshToken(refresh);
+              localStorage.setItem('refreshToken', refresh);
+            }
+            setIsLoggedIn(true);
+          } else {
+            // Refresh failed, clear everything
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            setToken('');
+            setRefreshToken('');
+            setIsLoggedIn(false);
+            navigate('/login');
+          }
+        } else {
+          // Token is still valid
+          setToken(storedAccessToken);
+          setRefreshToken(storedRefreshToken);
+          setIsLoggedIn(true);
+        }
+      }
+      setIsInitializing(false);
+    };
 
-  const shouldRefresh = (token: string): boolean => {
-    if (!token) return false;
-    
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const expirationTime = payload.exp * 1000; 
-      const currentTime = Date.now();
+    initializeAuth();
+  }, [navigate]);
 
-      return currentTime >= expirationTime - refreshThreshold;
-    } catch (error) {
-      return false;
-    }
-  };
-
+  // Token refresh interval
   useEffect(() => {
     const refreshInterval = setInterval(async () => {
       if (isLoggedIn && refreshToken) {
@@ -71,27 +127,14 @@ export const useAuth = (): UseAuthResult => {
               localStorage.setItem('refreshToken', refresh);
             }
           } else {
-            await handleLogout(); // Logout if refresh fails
+            await handleLogout();
           }
         }
       }
-    }, 3 * 60 * 1000); 
+    }, refreshThreshold);
 
     return () => clearInterval(refreshInterval);
   }, [token, refreshToken, isLoggedIn]);
-
-  // Initialize auth state from localStorage
-  useEffect(() => {
-    const storedAccessToken = localStorage.getItem('accessToken');
-    const storedRefreshToken = localStorage.getItem('refreshToken');
-    
-    if (storedAccessToken && storedRefreshToken) {
-      setToken(storedAccessToken);
-      setRefreshToken(storedRefreshToken);
-      setIsLoggedIn(true);
-    }
-    setIsInitializing(false);
-  }, []);
 
   const handleLogin = useCallback((accessToken: string, refreshToken: string) => {
     setToken(accessToken);
@@ -100,7 +143,7 @@ export const useAuth = (): UseAuthResult => {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     navigate('/processor');
-  }, []);
+  }, [navigate]);
 
   const handleLogout = async () => {
     try {
@@ -126,6 +169,7 @@ export const useAuth = (): UseAuthResult => {
       setToken('');
       setRefreshToken('');
       setIsLoggedIn(false);
+      navigate('/login');
     }
   };
 
