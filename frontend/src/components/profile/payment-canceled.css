@@ -1,0 +1,28 @@
+.payment-cancel {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle, #200225, #00001a);
+    color: #f4f4f9;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .payment-cancel button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #1a5d75;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .payment-cancel p {
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+  }
+  

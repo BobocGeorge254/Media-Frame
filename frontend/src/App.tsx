@@ -16,6 +16,7 @@ import logo from './logo.png';
 import { useAuth } from './hooks/useAuth'; 
 import PublicRoute from './components/routes/public-route';
 import ProtectedRoute from './components/routes/protected-route';
+import PaymentCancel from './components/profile/payment-canceled';
 
 const App: React.FC = () => {
   const { token, refreshToken, isLoggedIn, isInitializing, handleLogin, handleLogout } = useAuth();
@@ -100,9 +101,13 @@ const App: React.FC = () => {
         <Route
           path="/payment-success"
           element={
-            <PublicRoute isLoggedIn={isLoggedIn}>
               <PaymentSuccess token={token} />
-            </PublicRoute>
+          }
+        />
+        <Route
+          path="/payment-canceled"
+          element={
+              <PaymentCancel token={token} />
           }
         />
 
