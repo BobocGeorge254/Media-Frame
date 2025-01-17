@@ -7,6 +7,7 @@ const EmailConfirmation: React.FC = () => {
     const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const [redirectCountdown, setRedirectCountdown] = useState(3); // Countdown timer for redirect
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,7 +21,17 @@ const EmailConfirmation: React.FC = () => {
                     setMessage('Email confirmed successfully. Redirecting to login...');
                     setError('');
                     setStatus('success');
-                    setTimeout(() => navigate('/login'), 3000);
+
+                    // Start the redirect countdown timer
+                    const countdownInterval = setInterval(() => {
+                        setRedirectCountdown((prev) => {
+                            if (prev <= 1) {
+                                clearInterval(countdownInterval);
+                                navigate('/login'); // Redirect to login page
+                            }
+                            return prev - 1;
+                        });
+                    }, 1000);
                 } else {
                     const result = await response.json();
                     setError(result.error || 'Invalid or expired confirmation link.');
@@ -28,7 +39,7 @@ const EmailConfirmation: React.FC = () => {
                     setStatus('error');
                 }
             } catch (err) {
-                setError('Failed to connect to the server.');
+                setError('Failed to connect to the server. Please try again later.');
                 setMessage('');
                 setStatus('error');
             }
@@ -42,7 +53,12 @@ const EmailConfirmation: React.FC = () => {
             <div className="email-confirmation-box">
                 <h1>Email Confirmation</h1>
                 {status === 'loading' && <p>Processing your request...</p>}
-                {status === 'success' && <p className="success-text">{message}</p>}
+                {status === 'success' && (
+                    <>
+                        <p className="success-text">{message}</p>
+                        <p>Redirecting in {redirectCountdown} seconds...</p>
+                    </>
+                )}
                 {status === 'error' && <p className="error-text">{error}</p>}
             </div>
         </div>

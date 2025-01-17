@@ -13,7 +13,7 @@ import ForgotPassword from './components/authentication/forgot-password';
 import ResetPassword from './components/authentication/reset-password';
 import EmailConfirmation from './components/authentication/email-confirmation';
 import logo from './logo.png';
-import { useAuth } from './hooks/useAuth'; 
+import { useAuth } from './hooks/useAuth';
 import PublicRoute from './components/routes/public-route';
 import ProtectedRoute from './components/routes/protected-route';
 import PaymentCancel from './components/profile/payment-canceled';
@@ -100,14 +100,13 @@ const App: React.FC = () => {
         />
         <Route
           path="/payment-success"
-          element={
-              <PaymentSuccess token={token} />
-          }
+          element={<PaymentSuccess token={token} />}
         />
+
         <Route
           path="/payment-canceled"
           element={
-              <PaymentCancel token={token} />
+            <PaymentCancel token={token} />
           }
         />
 

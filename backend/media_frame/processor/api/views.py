@@ -1,4 +1,7 @@
+import os
+import tempfile
 from django.http import FileResponse
+from processor.transcription_video import add_subtitles_to_video, transcribe_audio_with_assemblyai
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
@@ -14,6 +17,8 @@ from rest_framework import permissions
 from processor.models import ProcessorUsage
 from django.utils import timezone
 from .serializer import ProcessorUsageSerializer
+from django.utils.timezone import now
+
 
 class TranscriptionAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -273,3 +278,49 @@ class ProcessorUsageAPIView(APIView):
         processor_usages = ProcessorUsage.objects.filter(user=request.user)
         serializer = ProcessorUsageSerializer(processor_usages, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+class VideoTranscriptionAPIView(APIView):
+    parser_classes = [MultiPartParser]
+
+    def post(self, request, *args, **kwargs):
+        video_file = request.FILES.get("file")
+
+        if not video_file:
+            return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Save the uploaded file temporarily
+            with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_video:
+                temp_video_path = temp_video.name
+                for chunk in video_file.chunks():
+                    temp_video.write(chunk)
+
+            # Close the file after writing
+            temp_video.close()
+
+            # Extract audio and transcribe it
+            audio_path = temp_video_path.replace(".mp4", ".mp3")
+            os.system(f"ffmpeg -i {temp_video_path} -q:a 0 -map a {audio_path}")
+            transcript = transcribe_audio_with_assemblyai(audio_path)
+
+            # Add subtitles to the video
+            subtitled_video_path = add_subtitles_to_video(temp_video_path, transcript)
+
+            # Serve the resulting video
+            response = FileResponse(open(subtitled_video_path, "rb"), as_attachment=True)
+            response["Content-Disposition"] = 'attachment; filename="transcribed_video.mp4"'
+            return response
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        finally:
+            # Cleanup temporary files
+            for path in [temp_video_path, audio_path]:
+                try:
+                    if os.path.exists(path):
+                        os.remove(path)
+                except Exception as cleanup_error:
+                    print(f"Error cleaning up file {path}: {cleanup_error}")
+
