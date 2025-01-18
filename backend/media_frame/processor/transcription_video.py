@@ -1,12 +1,10 @@
 import os
-import tempfile
-from moviepy import VideoFileClip, TextClip, CompositeVideoClip
+import cv2
 import assemblyai as aai
+from moviepy.editor import VideoFileClip
 
-# Set your AssemblyAI API key
 aai.settings.api_key = "2e7cd914329f43cd86f2ee5a1765ba3c"
 
-# Path to the custom font
 current_directory = os.path.dirname(os.path.abspath(__file__))
 font_path = os.path.join(current_directory, "font.ttf")
 
@@ -20,57 +18,90 @@ def transcribe_audio_with_assemblyai(file_path: str) -> list:
     if transcript.status == aai.TranscriptStatus.error:
         raise RuntimeError(f"Transcription error: {transcript.error}")
 
-    # Extract timestamped words
-    return transcript.words  # Returns a list of words with start/end times
-
+    return transcript.words  # Returns a list of `Word` objects
 
 def add_subtitles_to_video(video_path: str, segments: list) -> str:
     """
-    Add subtitles dynamically to the video using moviepy based on transcription segments.
+    Add subtitles to the video using OpenCV based on transcription segments.
     """
-    # Load the video
-    video = VideoFileClip(video_path)
+    cap = cv2.VideoCapture(video_path)
 
-    # Generate TextClips for each segment
-    subtitle_clips = []
-    for segment in segments:
-        start_time = segment["start"] / 1000.0  # Convert milliseconds to seconds
-        end_time = segment["end"] / 1000.0  # Convert milliseconds to seconds
-        text = segment["text"]
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-        # Create a TextClip for the current segment
-        subtitle = TextClip(
-            text=text,
-            font=font_path,
-            fontsize=30,
-            color="white",
-            bg_color="black",
-            stroke_color="yellow",  # Optional stroke for better visibility
-            stroke_width=1,
-            method="caption",
-            size=(video.size[0] - 100, None),  # Subtitle width with padding
-            text_align="center",
-            interline=4,  # Spacing between lines
-        ).set_start(start_time).set_end(end_time).set_position(("center", "bottom"))
-
-        subtitle_clips.append(subtitle)
-
-    # Combine video and subtitles
-    final_video = CompositeVideoClip([video, *subtitle_clips])
     output_video_path = video_path.replace(".mp4", "_subtitled.mp4")
-    final_video.write_videofile(output_video_path, codec="libx264", audio_codec="aac", fps=24)
 
-    return output_video_path
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Use mp4 codec
+    out = cv2.VideoWriter(output_video_path, fourcc, fps, (width, height))
 
+    frame_number = 0
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-# Example usage
-if __name__ == "__main__":
-    video_file_path = "path/to/video.mp4"  # Replace with your video file path
-    audio_file_path = "path/to/audio.mp3"  # Replace with your audio file path (if needed)
+    word_frame_mapping = []
+    for word in segments:
+        start_frame = int((word.start / 1000) * fps) 
+        end_frame = int((word.end / 1000) * fps)
+        word_frame_mapping.append((start_frame, end_frame, word.text))
 
-    # Transcribe the audio and get timestamped segments
-    segments = transcribe_audio_with_assemblyai(audio_file_path)
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-    # Add subtitles to the video
-    subtitled_video = add_dynamic_subtitles_to_video(video_file_path, segments)
-    print(f"Subtitled video saved to: {subtitled_video}")
+        for start_frame, end_frame, text in word_frame_mapping:
+            if start_frame <= frame_number <= end_frame:
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                font_scale = 1
+                color = (255, 255, 255)  
+                thickness = 2
+                position = (50, height - 50)  
+
+                wrapped_text = wrap_text(text, width, font, font_scale, thickness)
+
+                y_offset = height - 50
+                for line in wrapped_text:
+                    cv2.putText(frame, line, (50, y_offset), font, font_scale, color, thickness, lineType=cv2.LINE_AA)
+                    y_offset += 30  
+
+        out.write(frame)
+        frame_number += 1
+
+    cap.release()
+    out.release()
+
+    video_clip = VideoFileClip(video_path)
+    audio_clip = video_clip.audio
+    final_video = VideoFileClip(output_video_path)
+
+    final_video = final_video.set_audio(audio_clip)
+
+    final_output_path = video_path.replace(".mp4", "_final.mp4")
+    final_video.write_videofile(final_output_path, codec="libx264", audio_codec="aac", fps=fps)
+
+    return final_output_path
+
+def wrap_text(text, max_width, font, font_scale, thickness):
+    """
+    Wrap text to fit within the width of the screen, ensuring each line fits
+    """
+    words = text.split(" ")
+    lines = []
+    current_line = ""
+
+    for word in words:
+        test_line = f"{current_line} {word}".strip()
+        text_size = cv2.getTextSize(test_line, font, font_scale, thickness)[0]
+        text_width = text_size[0]
+
+        if text_width <= max_width:
+            current_line = test_line
+        else:
+            if current_line:
+                lines.append(current_line)
+            current_line = word
+
+    if current_line:
+        lines.append(current_line)
+
+    return lines

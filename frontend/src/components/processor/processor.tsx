@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Oval } from 'react-loader-spinner';
-import "./processor.css";
+import './processor.css';
 
 interface ProcessorProps {
   token: string;
@@ -71,7 +71,7 @@ const Processor: React.FC<ProcessorProps> = ({ token }) => {
     formData.append('file', file);
 
     if (action === 'transcribe' || action === 'video-transcribe') {
-      formData.append('language', language);
+      formData.append('language', language); // Append language only for transcription and video transcription
     }
 
     const endpointMap: Record<string, string> = {
@@ -145,7 +145,8 @@ const Processor: React.FC<ProcessorProps> = ({ token }) => {
           </select>
         </div>
 
-        {action === 'transcribe' || action === 'video-transcribe' ? (
+        {/* Language selector is shown only for 'transcribe' */}
+        {action === 'transcribe' && (
           <div className="form-group">
             <label htmlFor="language-select">Select Language:</label>
             <select
@@ -160,7 +161,7 @@ const Processor: React.FC<ProcessorProps> = ({ token }) => {
               <option value="ro">Romanian</option>
             </select>
           </div>
-        ) : null}
+        )}
 
         <div className="form-group">
           <input type="file" accept="audio/mp3,video/mp4" onChange={handleFileChange} />
