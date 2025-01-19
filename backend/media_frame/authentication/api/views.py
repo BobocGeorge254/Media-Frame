@@ -175,10 +175,16 @@ class UserDeleteSelfView(APIView):
 
     def delete(self, request):
         try:
+            refresh_token = request.data.get("refresh_token")
+            if refresh_token:
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+
+            username = request.user.username  
             request.user.delete()
-            
+
             return Response(
-                {"message": f"User '{request.user.username}' and all related data have been successfully deleted."},
+                {"message": f"User '{username}' has been successfully logged out and deleted."},
                 status=status.HTTP_200_OK,
             )
         except Exception as e:
