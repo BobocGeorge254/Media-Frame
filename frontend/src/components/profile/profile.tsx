@@ -31,7 +31,7 @@ const Profile: React.FC<ProfileProps> = ({ token }) => {
       price: '$0/month',
       features: [
         '2 audio/video processing tasks per day',
-        'Access to bassboost and noisecancel',
+        'Access to bassboost, noisecancel and transcription',
         'Basic processing speed',
       ],
       priceId: null
@@ -134,7 +134,7 @@ const Profile: React.FC<ProfileProps> = ({ token }) => {
       });
 
       if (!response.ok) throw new Error("Failed to delete account");
-      
+
     } catch (err) {
       setError(err instanceof Error ? err.message : "Account deletion failed");
     } finally {
@@ -190,7 +190,7 @@ const Profile: React.FC<ProfileProps> = ({ token }) => {
               ))}
             </ul>
             {tier.name !== 'Free' ? (
-              <button 
+              <button
                 className="select-plan-button"
                 disabled={profile.tier.toLowerCase() === tier.name.toLowerCase()}
                 onClick={() => tier.priceId && handlePayment(tier.priceId)}

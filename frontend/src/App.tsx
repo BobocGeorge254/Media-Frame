@@ -17,6 +17,7 @@ import { useAuth } from './hooks/useAuth';
 import PublicRoute from './components/routes/public-route';
 import ProtectedRoute from './components/routes/protected-route';
 import PaymentCancel from './components/profile/payment-canceled';
+import Contact from './components/contact/contact';
 
 const App: React.FC = () => {
   const { token, refreshToken, isLoggedIn, isInitializing, handleLogin, handleLogout } = useAuth();
@@ -40,11 +41,15 @@ const App: React.FC = () => {
               <button onClick={() => navigate('/profile')} className="navbar-button profile-button">
                 Profile
               </button>
+              <button onClick={() => navigate('/contact')} className="navbar-button contact-button">
+                Contact
+              </button>
               <button onClick={() => handleLogout()} className="navbar-button logout-button">
                 Logout
               </button>
             </>
           )}
+
         </div>
       </header>
 
@@ -140,6 +145,14 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn}>
               <ProcessorPayments token={token} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <Contact />
             </ProtectedRoute>
           }
         />
