@@ -4,7 +4,6 @@ import numpy as np
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from io import BytesIO
 
-# Import the function to test
 from processor.speechidentifier import speechidentifier_audio
 
 
