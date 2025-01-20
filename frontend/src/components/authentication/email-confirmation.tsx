@@ -7,12 +7,16 @@ const EmailConfirmation: React.FC = () => {
     const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
-    const [redirectCountdown, setRedirectCountdown] = useState(3); // Countdown timer for redirect
+    const [redirectCountdown, setRedirectCountdown] = useState(3);
     const navigate = useNavigate();
 
     useEffect(() => {
         const confirmEmail = async () => {
             try {
+                // Clear any existing auth tokens first
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
+
                 const response = await fetch(`http://127.0.0.1:8000/api/auth/confirm-email/${uid}/${token}/`, {
                     method: 'GET',
                 });
@@ -22,16 +26,20 @@ const EmailConfirmation: React.FC = () => {
                     setError('');
                     setStatus('success');
 
-                    // Start the redirect countdown timer
                     const countdownInterval = setInterval(() => {
                         setRedirectCountdown((prev) => {
                             if (prev <= 1) {
                                 clearInterval(countdownInterval);
-                                navigate('/login'); // Redirect to login page
+                                // Force a clean state before redirect
+                                localStorage.clear();
+                                window.location.href = '/login';
+                                return 0;
                             }
                             return prev - 1;
                         });
                     }, 1000);
+
+                    return () => clearInterval(countdownInterval);
                 } else {
                     const result = await response.json();
                     setError(result.error || 'Invalid or expired confirmation link.');
@@ -46,7 +54,7 @@ const EmailConfirmation: React.FC = () => {
         };
 
         confirmEmail();
-    }, [uid, token, navigate]);
+    }, [uid, token]);
 
     return (
         <div className="email-confirmation-container">
